@@ -1,15 +1,18 @@
 import tornado.ioloop
 import tornado.web
 import googlefinance
+import json
 
 class MainHandler(tornado.web.RequestHandler):
     def get(self):
         self.write("Welcome to googlefinance-proxy")
 
 class GetQuotesHandler(tornado.web.RequestHandler):
-    def get(self, symbol):
-        quotes = googlefinance.getQuotes(symbol)
-        self.write("getQuotes")
+    def get(self, symbols):
+        symbols = str(symbols).upper().split(',')
+        quotes = googlefinance.getQuotes(symbols)
+        quotesStr = json.dumps(quotes)
+        self.write(quotesStr)
 
 def make_app():
     return tornado.web.Application([
